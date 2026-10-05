@@ -1,0 +1,54 @@
+{# ------- Rendu des blocs du formulaire ------- #}
+
+{% macro badge(ajout) %}{% if ajout %}<span class="badge" title="Ajout — absent du formulaire original">+</span>{% endif %}{% endmacro %}
+
+{% macro formule(b) %}
+<article class="bloc formule{% if b.ajout %} is-ajout{% endif %}">
+  {% if b.titre %}<h3>{{ b.titre | rich | safe }} {{ badge(b.ajout) }}</h3>{% endif %}
+  <div class="f-grid{% if not b.vars %} no-vars{% endif %}">
+    <div class="f-eqs">
+      <div class="eq-main">
+        {% for e in b.eq %}<div class="eq">{{ e | tex | safe }}</div>{% endfor %}
+      </div>
+      {% if b.miroirs %}
+      <div class="eq-mirror" aria-label="Formules miroirs">
+        <span class="mirror-label">⇄</span>
+        {% for e in b.miroirs %}<div class="eq">{{ e | tex | safe }}</div>{% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    {% if b.vars %}
+    <table class="vars">
+      {% for v in b.vars %}
+      <tr><td class="sym">{{ v[0] | texi | safe }}</td><td>{{ v[1] | rich | safe }}</td><td class="unit">{{ v[2] }}</td></tr>
+      {% endfor %}
+    </table>
+    {% endif %}
+  </div>
+  {% if b.note %}<p class="note">{{ b.note | rich | safe }}</p>{% endif %}
+</article>
+{% endmacro %}
+
+{% macro table(b) %}
+<figure class="bloc tableau {{ b.cls }}{% if b.ajout %} is-ajout{% endif %}">
+  {% if b.titre %}<figcaption>{{ b.titre | rich | safe }} {{ badge(b.ajout) }}</figcaption>{% endif %}
+  <table>
+    {% if b.head %}<thead><tr>{% for h in b.head %}<th>{{ h | rich | safe }}</th>{% endfor %}</tr></thead>{% endif %}
+    <tbody>
+      {% for row in b.rows %}<tr>{% for c in row %}<td{% if not c %} class="empty"{% endif %}>{{ c | rich | safe }}</td>{% endfor %}</tr>{% endfor %}
+    </tbody>
+  </table>
+  {% if b.note %}<p class="note">{{ b.note | rich | safe }}</p>{% endif %}
+</figure>
+{% endmacro %}
+
+{% macro texte(b) %}
+<p class="bloc texte {{ b.kind }}">{% if b.kind == "attention" %}<span class="ico">⚠</span>{% endif %}{{ b.text | rich | safe }} {{ badge(b.ajout) }}</p>
+{% endmacro %}
+
+{% macro svg(b) %}
+<figure class="bloc svg svg-{{ b.name }}">
+  {% if b.titre %}<figcaption>{{ b.titre }}</figcaption>{% endif %}
+  {% if b.name == "nomogramme" %}{% nomogramme %}{% elif b.name == "cycleQuintes" %}{% cycleQuintes %}{% endif %}
+</figure>
+{% endmacro %}

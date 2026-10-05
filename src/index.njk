@@ -1,0 +1,52 @@
+---
+permalink: /index.html
+---
+{% from "blocs.njk" import formule, table, texte, svg, badge %}
+{% set F = formulaire %}
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Formulaire acoustique — BF son</title>
+  <link rel="stylesheet" href="/katex/katex.min.css">
+  <link rel="stylesheet" href="/css/print.css">
+</head>
+<body>
+  <header class="doc-head">
+    <p class="kicker">{{ F.sousTitre }}</p>
+    <h1>{{ F.titre }}</h1>
+    <p class="meta">{{ F.source }} · {{ F.version }}</p>
+    <p class="legend"><span class="badge">+</span> ajout absent du formulaire original &nbsp;·&nbsp; <span class="mirror-label">⇄</span> formules miroirs (variable isolée)</p>
+  </header>
+
+  <nav class="toc" aria-label="Sommaire">
+    <ol>
+      {% for s in F.sections %}
+      <li><a href="#s{{ s.num | replace('.', '-') }}"><span class="n">{{ s.num }}</span> {{ s.titre }}{% if s.ajout %} <span class="badge">+</span>{% endif %}</a></li>
+      {% endfor %}
+      <li><a href="#errata"><span class="n">–</span> Différences avec l’original</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    {% for s in F.sections %}
+    <section id="s{{ s.num | replace('.', '-') }}" class="section{% if s.ajout %} is-ajout{% endif %}">
+      <h2><span class="n">{{ s.num }}</span> {{ s.titre }} {{ badge(s.ajout) }}</h2>
+      {% for b in s.blocs %}
+        {% if b.type == "formule" %}{{ formule(b) }}
+        {% elif b.type == "table" %}{{ table(b) }}
+        {% elif b.type == "texte" %}{{ texte(b) }}
+        {% elif b.type == "svg" %}{{ svg(b) }}
+        {% endif %}
+      {% endfor %}
+    </section>
+    {% endfor %}
+
+    <section id="errata" class="section errata">
+      <h2><span class="n">–</span> Différences avec l’original</h2>
+      <ul>{% for e in F.errata %}<li>{{ e | rich | safe }}</li>{% endfor %}</ul>
+    </section>
+  </main>
+</body>
+</html>

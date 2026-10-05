@@ -1,0 +1,190 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap");
+
+/* ============================================================
+   Formulaire — feuille pensée pour l'impression A4
+   ============================================================ */
+
+:root {
+  --ink: #161616;
+  --ink-2: #4a4a4a;
+  --ink-3: #8a8a8a;
+  --rule: #c9c9c4;
+  --rule-soft: #e4e4df;
+  --tint: #f3f3ef;
+  --accent: #1d4f7a;   /* numéros de section, miroirs */
+  --ajout: #b5541a;    /* repère des ajouts */
+  --paper: #fff;
+  --bg: #e6e6e1;
+  --fs: 9pt;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: var(--fs)/1.38 "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- À l'écran : une « feuille » A4 ---------- */
+@media screen {
+  body { padding: 24px 16px 64px; }
+  .doc-head, .toc, main {
+    max-width: 210mm; margin-inline: auto; background: var(--paper);
+    padding-inline: 14mm;
+  }
+  .doc-head { padding-top: 14mm; }
+  main { padding-bottom: 14mm; box-shadow: 0 1px 3px rgb(0 0 0 / .08); }
+  @media (max-width: 640px) {
+    body { padding: 0; }
+    .doc-head, .toc, main { padding-inline: 16px; }
+    .f-grid { grid-template-columns: 1fr !important; }
+    .tableau.dense { overflow-x: auto; }
+  }
+}
+
+/* ---------- Impression ---------- */
+@page {
+  size: A4;
+  margin: 13mm 13mm 15mm 13mm;
+  @bottom-left  { content: "Acoustique — Formulaire · BF technicien du son"; font: 7pt "IBM Plex Sans", sans-serif; color: #8a8a8a; }
+  @bottom-right { content: "p. " counter(page) " / " counter(pages); font: 7pt "IBM Plex Sans", sans-serif; color: #8a8a8a; }
+}
+@page :first { @bottom-left { content: none; } }
+
+@media print {
+  body { background: none; }
+  a { color: inherit; text-decoration: none; }
+  .toc { break-after: avoid; }
+}
+
+/* ---------- En-tête du document ---------- */
+.doc-head { border-bottom: 2px solid var(--ink); padding-bottom: 5mm; }
+.kicker { margin: 0; font-size: 8pt; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+h1 { margin: 1mm 0 2mm; font-size: 22pt; font-weight: 600; letter-spacing: -.01em; line-height: 1.1; }
+.meta { margin: 0; color: var(--ink-2); font-size: 8pt; }
+.legend { margin: 3mm 0 0; font-size: 8pt; color: var(--ink-2); }
+
+/* ---------- Sommaire ---------- */
+.toc { padding-top: 6mm; padding-bottom: 6mm; }
+.toc ol { list-style: none; margin: 0; padding: 0; columns: 2; column-gap: 10mm; }
+.toc li { break-inside: avoid; padding: 1.2mm 0; border-bottom: 1px dotted var(--rule); }
+.toc a { color: var(--ink); text-decoration: none; }
+.toc .n { display: inline-block; min-width: 9mm; color: var(--accent); font-weight: 600; }
+
+/* ---------- Sections ---------- */
+.section { padding-top: 5mm; }
+h2 {
+  margin: 0 0 3mm; padding-bottom: 1.2mm;
+  font-size: 12pt; font-weight: 600;
+  border-bottom: 1px solid var(--ink);
+  break-after: avoid;
+}
+h2 .n { color: var(--accent); margin-right: 2mm; }
+
+.bloc { break-inside: avoid; margin: 0 0 3.2mm; }
+
+h3 {
+  margin: 0 0 1mm; font-size: 9pt; font-weight: 600; color: var(--ink);
+  break-after: avoid;
+}
+
+/* ---------- Bloc formule ---------- */
+.formule { border-left: 2px solid var(--rule); padding: .6mm 0 .6mm 3mm; }
+.formule.is-ajout { border-left-color: var(--ajout); }
+
+.f-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 1mm 6mm;
+  align-items: start;
+}
+.f-grid.no-vars { grid-template-columns: 1fr; }
+
+.eq-main, .eq-mirror { display: flex; flex-wrap: wrap; align-items: center; gap: .5mm 7mm; }
+.eq-main .katex { font-size: 1.12em; }
+
+.eq-mirror {
+  margin-top: 1mm; padding: .8mm 2.5mm;
+  background: var(--tint);
+  border-radius: 1mm;
+  color: var(--ink-2);
+}
+.eq-mirror .katex { font-size: .98em; color: var(--ink); }
+.mirror-label { color: var(--accent); font-weight: 600; font-size: 10pt; }
+
+.eq .katex-display { margin: .7mm 0; text-align: left; }
+.eq .katex-display > .katex { text-align: left; }
+
+/* Légende des variables */
+.vars { border-collapse: collapse; width: 100%; font-size: 8pt; }
+.vars td { padding: .35mm 1.5mm .35mm 0; vertical-align: baseline; border-bottom: 1px solid var(--rule-soft); }
+.vars tr:last-child td { border-bottom: 0; }
+.vars .sym { white-space: nowrap; width: 1%; padding-right: 2.5mm; }
+.vars .unit { white-space: nowrap; color: var(--ink-2); text-align: right; padding-right: 0; }
+
+.note { margin: 1mm 0 0; font-size: 8pt; color: var(--ink-2); }
+
+/* ---------- Encadrés texte ---------- */
+.texte { break-after: avoid; break-inside: avoid; margin: 0 0 3mm; padding: 1.5mm 3mm; font-size: 8.5pt; background: var(--tint); border-radius: 1mm; }
+.texte.attention { background: none; border: 1px solid var(--ink); }
+.texte .ico { margin-right: 2mm; }
+
+/* ---------- Tableaux ---------- */
+.tableau figcaption, .svg figcaption { font-weight: 600; margin-bottom: 1.2mm; }
+.tableau { margin-inline: 0; }
+.tableau table { border-collapse: collapse; width: 100%; font-size: 8pt; }
+.tableau th, .tableau td { padding: .6mm 1.6mm; border-bottom: 1px solid var(--rule-soft); text-align: left; vertical-align: baseline; }
+.tableau thead th { border-bottom: 1px solid var(--ink); font-weight: 600; }
+.tableau.half table { width: auto; min-width: 55%; }
+
+.tableau.dense table { font-size: 7.2pt; }
+.tableau.dense th, .tableau.dense td { padding: .45mm 1mm; text-align: right; }
+.tableau.dense td:first-child, .tableau.dense th:first-child { text-align: left; }
+
+.tableau.notes td:first-child { color: var(--accent); }
+.tableau.weighting td:nth-child(4), .tableau.weighting th:nth-child(4) { border-left: 1px solid var(--rule); padding-left: 3mm; }
+.tableau.triangle td.empty { border-bottom-color: transparent; }
+.tableau.triangle td:first-child { border-right: 1px solid var(--rule); }
+.tableau.absorption td:first-child { text-align: left; width: 42%; }
+.tableau.nomenclature table { columns: 1; }
+.tableau.nomenclature td:first-child { width: 22mm; }
+.tableau.nomenclature td:last-child { color: var(--ink-2); white-space: nowrap; }
+
+/* ---------- Badge « ajout » ---------- */
+.badge {
+  display: inline-grid; place-items: center;
+  width: 3.4mm; height: 3.4mm; border-radius: 50%;
+  background: var(--ajout); color: #fff;
+  font-size: 6.5pt; font-weight: 600; line-height: 1;
+  vertical-align: .25em;
+}
+h2 .badge { width: 4mm; height: 4mm; font-size: 7.5pt; }
+.section.is-ajout h2 { border-bottom-color: var(--ajout); }
+
+/* ---------- Graphiques SVG ---------- */
+.svg svg { display: block; width: 100%; height: auto; font-family: "IBM Plex Sans", sans-serif; }
+.svg-cycleQuintes svg { max-width: 105mm; margin-inline: auto; }
+.svg-nomogramme svg { max-width: 160mm; margin-inline: auto; }
+
+.nomo text { font-size: 3.2px; fill: var(--ink); }
+.nomo .ref { fill: var(--ink-3); font-size: 2.6px; }
+.nomo .cap { font-weight: 600; font-size: 3.2px; }
+.nomo .axis { stroke: var(--ink); stroke-width: .35; }
+.nomo .major { stroke: var(--ink); stroke-width: .3; }
+.nomo .minor { stroke: var(--ink-2); stroke-width: .15; }
+
+.quintes .ring { fill: none; stroke: var(--rule); stroke-width: .4; }
+.quintes .sep { stroke: var(--rule); stroke-width: .3; }
+.quintes text { fill: var(--ink); }
+.quintes .maj { font-size: 5.2px; font-weight: 600; }
+.quintes .min { font-size: 4.4px; fill: var(--ink-2); }
+.quintes .alt { font-size: 3.8px; fill: var(--accent); }
+.quintes .sm { font-size: 3.2px; }
+.quintes .cap { font-size: 3.6px; fill: var(--ink-3); }
+
+/* ---------- Errata ---------- */
+.errata ul { margin: 0; padding-left: 4mm; font-size: 8pt; color: var(--ink-2); }
+.errata li { margin-bottom: 1mm; }
